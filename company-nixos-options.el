@@ -50,11 +50,18 @@
 (defun company-nix-options--annotation (candidate)
   (format "  ->  %s" (get-text-property 0 'meta candidate)))
 
+(defun company-nix-options--prefix ()
+  "Grab prefix at point."
+  (and nix-mode
+       (or (company-grab-sylmob-cons "\\." 1)
+           'stop)))
+
+;;;###autoload
 (defun company-nix-options (command &optional arg &rest ignored)
   (interactive (list 'interactive))
   (cl-case command
     (interactive (company-begin-backend 'company-nix-options))
-    (prefix (company-grab-symbol-cons "\\.\\|->" 2))
+    (prefix (company-nix-options--prefix))
     (candidates (company-nix-options--candidates arg))
     (annotation (company-nix-options--annotation arg))
     (meta (company-nix-options--meta arg))))
