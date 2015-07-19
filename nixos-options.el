@@ -8,9 +8,11 @@
 (require 'helm)
 
 (defvar nixos-options-json-file
-  (expand-file-name
-   (shell-command "nix-build --no-out-link '<nixpkgs/nixos/release.nix>' -A options")
-   "/share/doc/nixos/options.json")
+  (let* ((cmd
+           "nix-build --no-out-link '<nixpkgs/nixos/release.nix>' -A options")
+          (dir (replace-regexp-in-string "\n\\'" ""
+                                         (shell-command-to-string cmd))))
+    (expand-file-name "share/doc/nixos/options.json" dir))
   "Location of the options file.")
 
 (defun add-name-to-cdr (option)
