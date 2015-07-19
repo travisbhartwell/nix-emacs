@@ -52,9 +52,8 @@
 
 (defun company-nix-options--prefix ()
   "Grab prefix at point."
-  (and nix-mode
-       (or (company-grab-sylmob-cons "\\." 1)
-           'stop)))
+  (or (company-grab-symbol-cons "\\." 2)
+      'stop))
 
 ;;;###autoload
 (defun company-nix-options (command &optional arg &rest ignored)
