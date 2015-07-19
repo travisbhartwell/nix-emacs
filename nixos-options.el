@@ -51,7 +51,7 @@
     (requires-pattern . 2)
     (candidates . nixos-options)
     (follow . 1)
-    (persistent-action . (lambda (f) (message "%s" (pp (cdr (assoc nixos-options-description f))))))
+    (persistent-action . (lambda (f) (message (format "%s" (cdr (assoc nixos-options-description f))))))
     (action . (("Insert into buffer" . (lambda (f) (insert (cdr (assoc nixos-options-name f)))))
                ("Pretty print" . (lambda (f) (message "Pretty Printed: %s" (pp f))))
                ("Display name" . (lambda (f) (message "Name: %s" (cdr (assoc nixos-options-name f)))))))))
