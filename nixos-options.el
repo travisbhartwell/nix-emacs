@@ -1,5 +1,5 @@
 ;; TODO: Create an action that prints the data in a nicely formated way in a temporary buffer
-;; TODO: Cache the json file in a specified directory ~/.emacs.d/cache? by running the nix-build command below
+;; DONE: Cache the json file in a specified directory ~/.emacs.d/cache? by running the nix-build command below
 ;; cp $(nix-build --no-out-link '<nixpkgs/nixos/release.nix>' -A options)/share/doc/nixos/options.json .
 ;; TODO: Make this into a proper Emacs module
 ;; TODO: Add function to refresh the options json cache
@@ -11,12 +11,20 @@
 (require 'helm)
 
 (defvar nixos-options-json-file
-  (expand-file-name "~/options.json")
+  (concat spacemacs-cache-directory "nix-options.json")
   "Location of the cached options file.")
 
-(defvar nixos-nixpkgs-base-dir
-  "/nix/var/nix/profiles/per-user/root/channels/nixos/nixpkgs"
-  "Base directory for the nixpkgs for the current active channel")
+(defun retrieve-options ()
+  (shell-command (concat
+                  "cp "
+                  "$(nix-build --no-out-link '<nixpkgs/nixos/release.nix>' -A options)"
+                  "/share/doc/nixos/options.json "
+                  nixos-options-json-file
+                  )))
+
+(defun init ()
+  (unless (file-exists-p nixos-options-json-file)
+    (retrieve-options)))
 
 (defun add-name-to-cdr (option)
   (let ((name (car option))
