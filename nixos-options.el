@@ -1,8 +1,5 @@
 ;; TODO: Create an action that prints the data in a nicely formated way in a temporary buffer
-;; DONE: Cache the json file in a specified directory ~/.emacs.d/cache? by running the nix-build command below
-;; cp $(nix-build --no-out-link '<nixpkgs/nixos/release.nix>' -A options)/share/doc/nixos/options.json .
 ;; TODO: Make this into a proper Emacs module
-;; TODO: Add function to refresh the options json cache
 ;; TODO: Add an action to insert the selected name into the buffer
 ;; TODO: ? Create a company-mode backend for this for nix-mode?
 ;; TODO: "Declared In" has link to the file where this option is.  Query the system to find out where in the store this is.  Make a hyperlink to this file.
@@ -11,20 +8,10 @@
 (require 'helm)
 
 (defvar nixos-options-json-file
-  (concat spacemacs-cache-directory "nix-options.json")
-  "Location of the cached options file.")
-
-(defun retrieve-options ()
-  (shell-command (concat
-                  "cp "
-                  "$(nix-build --no-out-link '<nixpkgs/nixos/release.nix>' -A options)"
-                  "/share/doc/nixos/options.json "
-                  nixos-options-json-file
-                  )))
-
-(defun init ()
-  (unless (file-exists-p nixos-options-json-file)
-    (retrieve-options)))
+  (expand-file-name
+   (shell-command "nix-build --no-out-link '<nixpkgs/nixos/release.nix>' -A options")
+   "/share/doc/nixos/options.json")
+  "Location of the options file.")
 
 (defun add-name-to-cdr (option)
   (let ((name (car option))
