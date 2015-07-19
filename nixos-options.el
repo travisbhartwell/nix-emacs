@@ -1,9 +1,3 @@
-;; TODO: Create an action that prints the data in a nicely formated way in a temporary buffer
-;; TODO: Make this into a proper Emacs module
-;; TODO: Add an action to insert the selected name into the buffer
-;; TODO: ? Create a company-mode backend for this for nix-mode?
-;; TODO: "Declared In" has link to the file where this option is.  Query the system to find out where in the store this is.  Make a hyperlink to this file.
-
 (require 'json)
 (require 'helm)
 
