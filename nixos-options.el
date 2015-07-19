@@ -1,3 +1,27 @@
+;;; nixos-options.el --- Interface for browsing and completing NixOS options.
+
+;; Copyright (C) 2015 Diego Berrocal and Travis B. Hartwell
+
+;; Author: Diego Berrocal <cestdiego@gmail.com>
+;;      Travis B. Hartwell <nafai@travishartwell.net>
+;; Created: 18 July 2015
+
+;; Keywords: unix
+;; Homepage: http://www.github.com/travisbhartwell/nix-emacs/
+
+;; This file is not part of GNU Emacs.
+
+;;; License:
+
+;; TODO: Likely GPL.
+
+;;; Commentary:
+
+;; Useful functions for exploring the NixOS options.  Inspired by
+;; https://nixos.org/nixos/options.html.
+
+;;; Code:
+
 (require 'json)
 (require 'helm)
 
