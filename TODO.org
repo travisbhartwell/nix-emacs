@@ -14,4 +14,13 @@ find out where in the store this is. Make a hyperlink to this file.
 In that way one can check for packages as well
  
  Link: file:~/spacemacs_conf/nix/extensions/nix-options/nixos-options.el::(defvar%20nixos-options-json-file
+** TODO Figure out nixos options Data Structure for Company
+
+#+begin_src emacs-lisp
+  ("xserver" .
+   (("window-manager" . (("description" . meta) ("subcategories" . ("i3" . ( ("description" .  description) )))))
+   ("enable" (("description" . description)))))
+#+end_src
+
+
 
