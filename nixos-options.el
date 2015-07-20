@@ -46,23 +46,35 @@
          (options (json-read-file nixos-options-json-file)))
     (mapcar 'add-name-to-cdr options)))
 
-(defconst nixos-options-name "name")
-(defconst nixos-options-type "type")
-(defconst nixos-options-description "description")
-(defconst nixos-options-default "default")
-(defconst nixos-options-example "example")
-(defconst nixos-options-declarations "declarations")
+(defvar nixos-options-name-indent-amount 0
+   "Indent by the maximum length, plus a colon, plus two spaces.")
 
-(defconst nixos-options-long-names
-  '((nixos-options-name . "Name")
-    (nixos-options-type . "Type")
-    (nixos-options-description . "Description")
-    (nixos-options-default . "Default value")
-    (nixos-options-example . "Example value")
-    (nixos-options-declarations . "Declared in")))
+(defmacro define-nixos-options-item (item long-name)
+  (let* ((name-const (intern (concat "nixos-options-" item)))
+         (long-name-const (intern (concat "nixos-options-" item "-long-name")))
+         (long-name-length-plus-padding (+ 3 (length long-name)))
+         (long-name-docstring (format "The long description for %s." item))A
+         (item-getter (intern (concat "nixos-options-get-" item)))
+         (item-getter-docstring (format "Get the value of %s from OPTION." item))
+         (item-display (intern (concat "nixos-options-display-" item)))
+         (item-display-docstring (format "Display the value for %s from OPTION." item)))
+    `(progn
+      (defconst ,name-const ,item)
+      (defconst ,long-name-const ,long-name ,long-name-docstring)
+      (if (> ,long-name-length-plus-padding nixos-options-name-indent-amount)
+          (setq nixos-options-name-indent-amount ,long-name-length-plus-padding))
+      (defun ,item-getter (option)
+        ,item-getter-docstring
+        (cdr (assoc ,name-const option)))
+      (defun ,item-display (option)
+        ,item-display-docstring
+        (message "%s:  %s" ,long-name-const (,item-getter))))))
 
-(defvar nixos-options-name-indent-amount
-  (+ 3 (apply 'max (mapcar (lambda (long-name) (length (cdr long-name))) nixos-options-long-names)))
-  "Indent by the maximum length, plus a colon, plus two spaces.")
+(define-nixos-options-item "name" "Name")
+(define-nixos-options-item "type" "Type")
+(define-nixos-options-item "description" "Description")
+(define-nixos-options-item "default" "Default value")
+(define-nixos-options-item "example" "Example value")
+(define-nixos-options-item "declarations" "Declared in")
 
 (provide 'nixos-options)

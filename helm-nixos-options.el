@@ -31,10 +31,10 @@
     (requires-pattern . 2)
     (candidates . nixos-options)
     (follow . 1)
-    (persistent-action . (lambda (f) (message (format "%s" (cdr (assoc nixos-options-description f))))))
-    (action . (("Insert into buffer" . (lambda (f) (insert (cdr (assoc nixos-options-name f)))))
+    (persistent-action . (lambda (f) (message (format "%s" (nixos-options-get-description f)))))
+    (action . (("Insert into buffer" . (lambda (f) (insert (nixos-options-get-name f))))
                ("Pretty print" . (lambda (f) (message "Pretty Printed: %s" (pp f))))
-               ("Display name" . (lambda (f) (message "Name: %s" (cdr (assoc nixos-options-name f)))))))))
+               ("Display name" . (lambda (f) (message "Name: %s" (nixos-options-get-name f))))))))
 
 (defun helm-search-nixos-options ()
   (interactive)

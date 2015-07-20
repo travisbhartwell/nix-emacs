@@ -28,8 +28,8 @@
 
 (defvar company-nixos-options-keywords
   (mapcar (lambda (nixos-option)
-            (list (car nixos-option)
-                  (cdr (assoc nixos-options-description nixos-option))))
+            (list (nixos-options-get-name nixos-option)
+                  (nixos-options-get-description nixos-option)))
           nixos-options))
 
 (defun company-nixos-options--make-candidate (candidate)
