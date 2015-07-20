@@ -42,17 +42,22 @@
          (item-display-docstring
           (format "Display the value for %s from OPTION." item)))
     `(progn
-      (defconst ,name-const ,item)
-      (defconst ,long-name-const ,long-name ,long-name-docstring)
-      (if (> ,long-name-length-plus-padding nixos-options-name-indent-amount)
-          (setq nixos-options-name-indent-amount
-                ,long-name-length-plus-padding))
-      (defun ,item-getter (option)
-        ,item-getter-docstring
-        (cdr (assoc ,name-const option)))
-      (defun ,item-display (option)
-        ,item-display-docstring
-        (message "%s:  %s" ,long-name-const (,item-getter))))))
+       (defconst ,name-const ,item)
+       (defconst ,long-name-const ,long-name ,long-name-docstring)
+       (if (> ,long-name-length-plus-padding nixos-options-name-indent-amount)
+           (setq nixos-options-name-indent-amount
+                 ,long-name-length-plus-padding))
+       (defun ,item-getter (option)
+         ,item-getter-docstring
+         (cdr (assoc ,name-const option)))
+       (defun ,item-display (option)
+         ,item-display-docstring
+         (let ((item (,item-getter option))
+               (format-string
+                (format "%%-%ds %%s\n" nixos-options-name-indent-amount)))
+           (if (not (null item))
+               (format format-string (concat ,long-name-const ":") item)
+             ""))))))
 
 (define-nixos-options-item "name" "Name")
 (define-nixos-options-item "type" "Type")
@@ -80,5 +85,28 @@
   (let* ((json-key-type 'string)
          (options (json-read-file nixos-options-json-file)))
     (mapcar 'add-name-to-cdr options)))
+
+(defun nixos-options-get-documentation-for-option (option)
+  (concat (nixos-options-display-name option)
+          (nixos-options-display-type option)
+          (nixos-options-display-description option)
+          (nixos-options-display-default option)
+          (nixos-options-display-example option)
+          (nixos-options-display-declarations option)))
+
+;; Borrowed from anaconda-mode
+(defun nixos-options-doc-buffer (doc)
+  "Display documentation buffer with contents DOC."
+  (let ((buf (get-buffer-create "*nixos-options-doc*")))
+    (with-current-buffer buf
+      (view-mode -1)
+      (erase-buffer)
+      (insert doc)
+      (goto-char (point-min))
+      (view-mode 1)
+      buf)))
+
+(defun nixos-option-get-option-by-name (name)
+  (assoc name nixos-options))
 
 (provide 'nixos-options)
