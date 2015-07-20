@@ -9,3 +9,9 @@ CLOSED: [2015-07-19 Sun 13:01]
 ** TODO  Feature: Hyperlink Options file 
 "Declared In" has link to the file where this option is. Query the system to
 find out where in the store this is. Make a hyperlink to this file.
+** TODO  Use also nixos-packages-json-file for helm completions      <2015-07-20 Mon 00:47>
+
+In that way one can check for packages as well
+ 
+ Link: file:~/spacemacs_conf/nix/extensions/nix-options/nixos-options.el::(defvar%20nixos-options-json-file
+
