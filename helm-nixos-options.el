@@ -13,9 +13,7 @@
 
 ;; This file is not part of GNU Emacs.
 
-;;; License:
-
-;; TODO: Likely GPL.
+;;; License: GPLv3
 
 ;;; Commentary:
 
@@ -40,7 +38,7 @@
                ("Pretty print" . (lambda (f) (message "Pretty Printed: %s" (pp f))))
                ("Display name" . (lambda (f) (message "Name: %s" (nixos-options-get-name f))))))))
 
-(defun helm-search-nixos-options ()
+(defun helm-nixos-options ()
   (interactive)
   (helm :sources `(,(helm-source-nixos-options-search))
         :buffer "*helm-nixos-options*"))

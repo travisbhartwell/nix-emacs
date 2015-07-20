@@ -13,9 +13,7 @@
 
 ;; This file is not part of GNU Emacs.
 
-;;; License:
-
-;; TODO: Likely GPL.
+;;; License: GPLv3
 
 ;;; Commentary:
 

@@ -1,4 +1,38 @@
 #+TITLE: Nix Options
-
 A set of useful Emacs modes and functions for users of Nix and Nix OS.
 
+** Usage
+
+*** helm-nixos-options
+
+The function =helm-nixos-options= is the one that you want to bind. You are free
+to choose where and if you want it global you can have this.
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c C-S-n") 'helm-nixos-options)
+#+end_src
+
+It looks like this
+[ insert helm buffer here ] 
+
+The description of the option is shown in the minibuffer
+
+If you want more information, there is a detailed buffer when you press =return=
+
+[ insert doc-nixos-options-buffer here ]
+
+There are also other actions like inserting the current match into the buffer
+
+[or insert a gif with both things...w/e]
+
+*** company-nixos-options
+
+Add company-nixos-options to allowed company-mode backends list
+
+#+begin_src emacs-lisp
+  (add-to-list 'company-backends 'company-nixos-options)
+#+end_src
+
+For now it shows the documentation of the option in a popup-buffer.
+
+[ show how in the gif, bonus points if actually doing sth useful x3 ]
