@@ -72,17 +72,32 @@
     (expand-file-name "share/doc/nixos/options.json" dir))
   "Location of the options file.")
 
-(defun add-name-to-cdr (option)
+(defun nixos-options--boolean-string (value)
+  "Return the string representation of the boolean VALUE.
+Returns VALUE unchanged if not a boolean."
+  (cond ((eq value 't) "true")
+        ((eq value :json-false) "false")
+        (t value)))
+
+(defun nixos-options--make-alist (option)
   (let ((name (car option))
-        (data (cdr option)))
+        (data (cdr option))
+        (default (nixos-options-get-default option))
+        (example (nixos-options-get-example option)))
     (progn
+      (if (not (null default))
+          (setcdr (assoc nixos-options-default option)
+                  (nixos-options--boolean-string default)))
+      (if (not (null example))
+          (setcdr (assoc nixos-options-example option)
+                  (nixos-options--boolean-string example)))
       (add-to-list 'data `(,nixos-options-name . ,name))
       `(,name . ,data))))
 
 (defvar nixos-options
   (let* ((json-key-type 'string)
-         (options (json-read-file nixos-options-json-file)))
-    (mapcar 'add-name-to-cdr options)))
+         (raw-options (json-read-file nixos-options-json-file)))
+    (mapcar 'nixos-options--make-alist raw-options)))
 
 (defun nixos-options-get-documentation-for-option (option)
   (concat (nixos-options-display-name option)
