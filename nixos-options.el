@@ -106,7 +106,7 @@
       (view-mode 1)
       buf)))
 
-(defun nixos-option-get-option-by-name (name)
+(defun nixos-options-get-option-by-name (name)
   (assoc name nixos-options))
 
 (provide 'nixos-options)
