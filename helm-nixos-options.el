@@ -31,7 +31,7 @@
     (follow . 1)
     (persistent-action . (lambda (f) (message (format "%s" (nixos-options-get-description f)))))
     (action . (("View documentation" . (lambda (f)
-                                         (switch-to-buffer
+                                         (switch-to-buffer-other-window
                                           (nixos-options-doc-buffer
                                            (nixos-options-get-documentation-for-option f)))))
                ("Insert into buffer" . (lambda (f) (insert (nixos-options-get-name f))))
