@@ -35,4 +35,4 @@ Add company-nixos-options to allowed company-mode backends list
 
 For now it shows the documentation of the option in a popup-buffer.
 
-[ show how in the gif, bonus points if actually doing sth useful x3 ]
+[[file:img/company-nixos-options.gif]]
