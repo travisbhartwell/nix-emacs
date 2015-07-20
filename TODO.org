@@ -1,0 +1,11 @@
+* Todos
+** TODO  Figuring namespacing/style for functions and variables
+** DONE Make this into a proper Emacs module for MELPA
+CLOSED: [2015-07-19 Sun 13:03]
+** TODO  Persistent Action should show info as in the webpage      :feature:
+Create an action that prints the data in a nicely formated way in a temporary buffer
+** DONE Create a company-mode backend for this for nix-mode?
+CLOSED: [2015-07-19 Sun 13:01]
+** TODO  Feature: Hyperlink Options file 
+"Declared In" has link to the file where this option is. Query the system to
+find out where in the store this is. Make a hyperlink to this file.
