@@ -34,9 +34,22 @@
           nixos-options))
 
 (defun company-nixos-options--make-candidate (candidate)
-  (let ((text (car candidate))
-        (meta (cadr candidate)))
-    (propertize text 'meta meta)))
+  (let* ((text (car candidate))
+         (meta (cadr candidate))
+         (doc (nixos-options-get-documentation-for-option
+               (nixos-options-get-option-by-name text))))
+    (propertize text 'meta meta 'doc doc)))
+
+;; The following two functions are borrowed from company-anaconda
+(defun company-nixos-options--get-property (property candidate)
+  "Return the property PROPERTY of completion candidate CANDIDATE."
+  (let ((item (get-text-property 0 'item candidate)))
+    (plist-get item property)))
+
+(defun company-nixos-options--doc-buffer (candidate)
+  "Return documentation buffer for chosen CANDIDATE."
+  (let ((doc (company-nixos-options--get-property :doc candidate)))
+    (and doc (nixos-options-doc-buffer doc))))
 
 (defun company-nixos-options--candidates (prefix)
   (let (res)
@@ -69,6 +82,7 @@
     (interactive (company-begin-backend 'company-nixos-options))
     (prefix (company-nixos-options--prefix))
     (candidates (company-nixos-options--candidates arg))
+    (doc-buffer (company-nixos-options--doc-buffer arg))
     (annotation (company-nixos-options--annotation arg))
     (meta (company-nixos-options--meta arg))))
 
