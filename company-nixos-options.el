@@ -8,6 +8,8 @@
 
 ;; Keywords: unix
 ;; Homepage: http://www.github.com/travisbhartwell/nix-emacs/
+;; Version: "0.1.0"
+;; Package-Requires: ((company "0.8.0") (nixos-options "0.0.1") (cl-lib "0.5.0"))
 
 ;; This file is not part of GNU Emacs.
 
@@ -24,45 +26,45 @@
 (require 'nixos-options)
 (require 'cl-lib)
 
-(defvar company-nix-options-keywords
+(defvar company-nixos-options-keywords
   (mapcar (lambda (nixos-option)
             (list (car nixos-option)
                   (cdr (assoc nixos-options-description nixos-option))))
           nixos-options))
 
-(defun company-nix-options--make-candidate (candidate)
+(defun company-nixos-options--make-candidate (candidate)
   (let ((text (car candidate))
         (meta (cadr candidate)))
     (propertize text 'meta meta)))
 
-(defun company-nix-options--candidates (prefix)
+(defun company-nixos-options--candidates (prefix)
   (let (res)
-    (dolist (item company-nix-options-keywords)
+    (dolist (item company-nixos-options-keywords)
       (when (string-prefix-p prefix (car item))
-        (push (company-nix-options--make-candidate item) res)))
+        (push (company-nixos-options--make-candidate item) res)))
     res))
 
-(defun company-nix-options--meta (candidate)
+(defun company-nixos-options--meta (candidate)
   (format "This will use %s of %s"
           (get-text-property 0 'meta candidate)
           (substring-no-properties candidate)))
 
-(defun company-nix-options--annotation (candidate)
+(defun company-nixos-options--annotation (candidate)
   (format "  ->  %s" (get-text-property 0 'meta candidate)))
 
-(defun company-nix-options--prefix ()
+(defun company-nixos-options--prefix ()
   "Grab prefix at point."
   (or (company-grab-symbol-cons "\\." 2)
       'stop))
 
 ;;;###autoload
-(defun company-nix-options (command &optional arg &rest ignored)
+(defun company-nixos-options (command &optional arg &rest ignored)
   (interactive (list 'interactive))
   (cl-case command
-    (interactive (company-begin-backend 'company-nix-options))
-    (prefix (company-nix-options--prefix))
-    (candidates (company-nix-options--candidates arg))
-    (annotation (company-nix-options--annotation arg))
-    (meta (company-nix-options--meta arg))))
+    (interactive (company-begin-backend 'company-nixos-options))
+    (prefix (company-nixos-options--prefix))
+    (candidates (company-nixos-options--candidates arg))
+    (annotation (company-nixos-options--annotation arg))
+    (meta (company-nixos-options--meta arg))))
 
 (provide 'company-nixos-options)
