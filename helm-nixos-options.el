@@ -32,7 +32,11 @@
     (candidates . nixos-options)
     (follow . 1)
     (persistent-action . (lambda (f) (message (format "%s" (nixos-options-get-description f)))))
-    (action . (("Insert into buffer" . (lambda (f) (insert (nixos-options-get-name f))))
+    (action . (("View documentation" . (lambda (f)
+                                         (switch-to-buffer
+                                          (nixos-options-doc-buffer
+                                           (nixos-options-get-documentation-for-option f)))))
+               ("Insert into buffer" . (lambda (f) (insert (nixos-options-get-name f))))
                ("Pretty print" . (lambda (f) (message "Pretty Printed: %s" (pp f))))
                ("Display name" . (lambda (f) (message "Name: %s" (nixos-options-get-name f))))))))
 
