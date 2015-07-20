@@ -26,26 +26,6 @@
 
 (require 'json)
 
-(defvar nixos-options-json-file
-  (let* ((cmd
-           "nix-build --no-out-link '<nixpkgs/nixos/release.nix>' -A options")
-          (dir (replace-regexp-in-string "\n\\'" ""
-                                         (shell-command-to-string cmd))))
-    (expand-file-name "share/doc/nixos/options.json" dir))
-  "Location of the options file.")
-
-(defun add-name-to-cdr (option)
-  (let ((name (car option))
-        (data (cdr option)))
-    (progn
-      (add-to-list 'data `("name" . ,name))
-      `(,name . ,data))))
-
-(defvar nixos-options
-  (let* ((json-key-type 'string)
-         (options (json-read-file nixos-options-json-file)))
-    (mapcar 'add-name-to-cdr options)))
-
 (defvar nixos-options-name-indent-amount 0
    "Indent by the maximum length, plus a colon, plus two spaces.")
 
@@ -80,5 +60,25 @@
 (define-nixos-options-item "default" "Default value")
 (define-nixos-options-item "example" "Example value")
 (define-nixos-options-item "declarations" "Declared in")
+
+(defvar nixos-options-json-file
+  (let* ((cmd
+           "nix-build --no-out-link '<nixpkgs/nixos/release.nix>' -A options")
+          (dir (replace-regexp-in-string "\n\\'" ""
+                                         (shell-command-to-string cmd))))
+    (expand-file-name "share/doc/nixos/options.json" dir))
+  "Location of the options file.")
+
+(defun add-name-to-cdr (option)
+  (let ((name (car option))
+        (data (cdr option)))
+    (progn
+      (add-to-list 'data `(nixos-options-name . ,name))
+      `(,name . ,data))))
+
+(defvar nixos-options
+  (let* ((json-key-type 'string)
+         (options (json-read-file nixos-options-json-file)))
+    (mapcar 'add-name-to-cdr options)))
 
 (provide 'nixos-options)
