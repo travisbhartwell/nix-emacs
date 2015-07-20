@@ -34,7 +34,7 @@
   (let* ((name-const (intern (concat "nixos-options-" item)))
          (long-name-const (intern (concat "nixos-options-" item "-long-name")))
          (long-name-length-plus-padding (+ 3 (length long-name)))
-         (long-name-docstring (format "The long description for %s." item))A
+         (long-name-docstring (format "The long description for %s." item))
          (item-getter (intern (concat "nixos-options-get-" item)))
          (item-getter-docstring
           (format "Get the value of %s from OPTION." item))
@@ -73,7 +73,7 @@
   (let ((name (car option))
         (data (cdr option)))
     (progn
-      (add-to-list 'data `(nixos-options-name . ,name))
+      (add-to-list 'data `(,nixos-options-name . ,name))
       `(,name . ,data))))
 
 (defvar nixos-options
