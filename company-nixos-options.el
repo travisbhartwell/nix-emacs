@@ -24,6 +24,7 @@
 
 ;;; Code:
 (require 'nixos-options)
+(require 'company)
 (require 'cl-lib)
 
 (defvar company-nixos-options-keywords
@@ -52,9 +53,13 @@
 (defun company-nixos-options--annotation (candidate)
   (format "  ->  %s" (get-text-property 0 'meta candidate)))
 
+(defun company-nixos--grab-symbol ()
+      (buffer-substring (point) (save-excursion (skip-syntax-backward "w_.")
+                                                (point))))
+
 (defun company-nixos-options--prefix ()
   "Grab prefix at point."
-  (or (company-grab-symbol-cons "\\." 2)
+  (or (company-nixos--grab-symbol)
       'stop))
 
 ;;;###autoload
