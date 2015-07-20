@@ -13,17 +13,17 @@ to choose where and if you want it global you can have this.
 #+end_src
 
 It looks like this
-[ insert helm buffer here ] 
+[[file:img/helm-nixos-options-candidates.png]]
 
 The description of the option is shown in the minibuffer
 
 If you want more information, there is a detailed buffer when you press =return=
 
-[ insert doc-nixos-options-buffer here ]
+[[file:img/helm-nixos-options-doc-buffer.png]]
 
 There are also other actions like inserting the current match into the buffer
 
-[or insert a gif with both things...w/e]
+[[file:img/helm-nixos-options.gif]]
 
 *** company-nixos-options
 
