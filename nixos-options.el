@@ -49,20 +49,24 @@
 (defvar nixos-options-name-indent-amount 0
    "Indent by the maximum length, plus a colon, plus two spaces.")
 
+;; Macros for defining constants and functions for working with options
 (defmacro define-nixos-options-item (item long-name)
   (let* ((name-const (intern (concat "nixos-options-" item)))
          (long-name-const (intern (concat "nixos-options-" item "-long-name")))
          (long-name-length-plus-padding (+ 3 (length long-name)))
          (long-name-docstring (format "The long description for %s." item))A
          (item-getter (intern (concat "nixos-options-get-" item)))
-         (item-getter-docstring (format "Get the value of %s from OPTION." item))
+         (item-getter-docstring
+          (format "Get the value of %s from OPTION." item))
          (item-display (intern (concat "nixos-options-display-" item)))
-         (item-display-docstring (format "Display the value for %s from OPTION." item)))
+         (item-display-docstring
+          (format "Display the value for %s from OPTION." item)))
     `(progn
       (defconst ,name-const ,item)
       (defconst ,long-name-const ,long-name ,long-name-docstring)
       (if (> ,long-name-length-plus-padding nixos-options-name-indent-amount)
-          (setq nixos-options-name-indent-amount ,long-name-length-plus-padding))
+          (setq nixos-options-name-indent-amount
+                ,long-name-length-plus-padding))
       (defun ,item-getter (option)
         ,item-getter-docstring
         (cdr (assoc ,name-const option)))
