@@ -41,4 +41,5 @@ For now it shows the documentation of the option in a popup-buffer.
 
 Please join us on Gitter:
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/travisbhartwell/nix-emacs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) 
+ #+ATTR_HTML: title="Join the chat at https://gitter.im/travisbhartwell/nix-emacs"
+  [[https://gitter.im/travisbhartwell/nix-emacs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge][file:https://badges.gitter.im/Join%20Chat.svg]]
