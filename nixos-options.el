@@ -9,7 +9,7 @@
 ;; Keywords: unix
 ;; Homepage: http://www.github.com/travisbhartwell/nix-emacs/
 ;; Version: 0.0.1
-;; Package-Requires: ((emacs "24") (json "1.4"))
+;; Package-Requires: ((emacs "24"))
 
 ;; This file is not part of GNU Emacs.
 
