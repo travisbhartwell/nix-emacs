@@ -34,7 +34,7 @@
 (defun company-nixos-options--candidates (prefix)
   (let (res)
     (dolist (option nixos-options)
-    res))
+    res)))
 
 (defun company-nixos-options--annotation (candidate)
   (let ((type (nixos-options-get-type
