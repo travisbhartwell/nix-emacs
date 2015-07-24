@@ -32,9 +32,12 @@
     (and doc (nixos-options-doc-buffer doc))))
 
 (defun company-nixos-options--candidates (prefix)
-  (let (res)
+  (let ((res))
     (dolist (option nixos-options)
-    res)))
+      (let ((name (nixos-options-get-name option)))
+        (when (string-prefix-p prefix name)
+          (push name res))))
+    res))
 
 (defun company-nixos-options--annotation (candidate)
   (let ((type (nixos-options-get-type
