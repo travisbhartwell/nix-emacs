@@ -25,23 +25,6 @@
 (require 'company)
 (require 'cl-lib)
 
-(defvar company-nixos-options-keywords
-  (mapcar (lambda (nixos-option)
-            (list (nixos-options-get-name nixos-option)
-                  (nixos-options-get-description nixos-option)))
-          nixos-options))
-
-(defun company-nixos-options--make-candidate (candidate)
-  (let* ((text (car candidate))
-         (meta (cadr candidate)))
-    (propertize text 'meta meta)))
-
-;; The following two functions are borrowed from company-anaconda
-(defun company-nixos-options--get-property (property candidate)
-  "Return the property PROPERTY of completion candidate CANDIDATE."
-  (let ((item (get-text-property 0 'item candidate)))
-    (plist-get item property)))
-
 (defun company-nixos-options--doc-buffer (candidate)
   "Return documentation buffer for chosen CANDIDATE."
   (let ((doc (nixos-options-get-documentation-for-option
@@ -50,18 +33,14 @@
 
 (defun company-nixos-options--candidates (prefix)
   (let (res)
-    (dolist (item company-nixos-options-keywords)
-      (when (string-prefix-p prefix (car item))
-        (push (company-nixos-options--make-candidate item) res)))
+    (dolist (option nixos-options)
     res))
 
-(defun company-nixos-options--meta (candidate)
-  (format "This will use %s of %s"
-          (get-text-property 0 'meta candidate)
-          (substring-no-properties candidate)))
-
 (defun company-nixos-options--annotation (candidate)
-  (format "  ->  %s" (get-text-property 0 'meta candidate)))
+  (let ((type (nixos-options-get-type
+               (nixos-options-get-option-by-name
+                candidate))))
+    (format "  <%s>" type)))
 
 (defun company-nixos--grab-symbol ()
       (buffer-substring (point) (save-excursion (skip-syntax-backward "w_.")
@@ -80,7 +59,6 @@
     (prefix (company-nixos-options--prefix))
     (candidates (company-nixos-options--candidates arg))
     (doc-buffer (company-nixos-options--doc-buffer arg))
-    ;; (annotation (company-nixos-options--annotation arg))
-    (meta (company-nixos-options--meta arg))))
+    (annotation (company-nixos-options--annotation arg))))
 
 (provide 'company-nixos-options)
