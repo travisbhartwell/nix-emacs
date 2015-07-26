@@ -64,6 +64,10 @@
 (define-nixos-options-item "example" "Example value")
 (define-nixos-options-item "declarations" "Declared in")
 
+(defvar nixos-options-nixpkgs-base-dir
+  "/nix/var/nix/profiles/per-user/root/channels/nixos/nixpkgs"
+  "Base directory for the nixpkgs for the current active channel")
+
 (defvar nixos-options-json-file
   (let* ((cmd
            "nix-build -Q --no-out-link '<nixpkgs/nixos/release.nix>' -A options")
@@ -109,19 +113,61 @@ Returns VALUE unchanged if not a boolean."
           (nixos-options-display-example option)
           (nixos-options-display-declarations option)))
 
+(defvar nixos-options-doc-buffer-name "*nixos-options-doc*")
+
 ;; Borrowed from anaconda-mode
 (defun nixos-options-doc-buffer (doc)
   "Display documentation buffer with contents DOC."
-  (let ((buf (get-buffer-create "*nixos-options-doc*")))
+  (let ((buf (get-buffer-create nixos-options-doc-buffer-name)))
     (with-current-buffer buf
       (view-mode -1)
       (erase-buffer)
       (insert doc)
       (goto-char (point-min))
+      (nixos-options-mode)
       (view-mode 1)
       buf)))
 
 (defun nixos-options-get-option-by-name (name)
   (assoc name nixos-options))
+
+(define-button-type 'nixos-options-declarations-button
+  'follow-link t
+  'action #'nixos-options-button-action
+  'button-function (lambda (v)
+                     (find-file-other-window
+                      (expand-file-name v nixos-options-nixpkgs-base-dir)))
+  'help-echo (purecopy "mouse-2, RET: go to the .nix file"))
+
+(defun nixos-options-button-action (button)
+  (apply (button-get button 'button-function)
+         (button-get button 'button-args)))
+
+(defun nixos-options-doc-format-declarations ()
+  "Given the doc buffer, format the options declarations."
+  (let ((buf (get-buffer-create nixos-options-doc-buffer-name))
+        (buffer-read-only nil)
+        (declarations-regex (purecopy "\\(Declared in\\):[ ]*\\\[\\(.*\\)\\]")))
+    (goto-char (point-min))
+    (when (re-search-forward declarations-regex)
+       (let ((title (match-string 1))
+            (values (match-string 2)))
+        (add-face-text-property (match-beginning 1) (match-end 1) 'bold)
+        (make-text-button (match-beginning 2)
+                          (match-end 2)
+                          'type 'nixos-options-declarations-button
+                          'button-args (list values))))))
+
+
+
+(define-derived-mode nixos-options-mode special-mode "NixOS Options"
+  "NixOS Options mode for viewing NixOS options.
+
+\\<nixos-options-mode-map>
+"
+  :group 'nixos-options
+  :syntax-table nil
+  :abbrev-table nil
+  (nixos-options-doc-format-declarations))
 
 (provide 'nixos-options)
