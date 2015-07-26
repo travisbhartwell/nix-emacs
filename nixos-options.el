@@ -95,9 +95,11 @@ Returns VALUE unchanged if not a boolean."
       `(,name . ,data))))
 
 (defvar nixos-options
-  (let* ((json-key-type 'string)
-         (raw-options (json-read-file nixos-options-json-file)))
-    (mapcar 'nixos-options--make-alist raw-options)))
+  (if (file-exists-p nixos-options-json-file)
+      (let* ((json-key-type 'string)
+             (raw-options (json-read-file nixos-options-json-file)))
+        (mapcar 'nixos-options--make-alist raw-options))
+    (message "Warning: Cannot find nixos option file.")))
 
 (defun nixos-options-get-documentation-for-option (option)
   (concat (nixos-options-display-name option)
