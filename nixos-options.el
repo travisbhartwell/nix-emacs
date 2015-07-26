@@ -148,15 +148,16 @@ Returns VALUE unchanged if not a boolean."
   (let ((buf (get-buffer-create nixos-options-doc-buffer-name))
         (buffer-read-only nil)
         (declarations-regex (purecopy "\\(Declared in\\):[ ]*\\\[\\(.*\\)\\]")))
-    (goto-char (point-min))
-    (when (re-search-forward declarations-regex)
-       (let ((title (match-string 1))
-            (values (match-string 2)))
-        (add-face-text-property (match-beginning 1) (match-end 1) 'bold)
-        (make-text-button (match-beginning 2)
-                          (match-end 2)
-                          'type 'nixos-options-declarations-button
-                          'button-args (list values))))))
+    (save-excursion
+      (goto-char (point-min))
+      (when (re-search-forward declarations-regex)
+        (let ((title (match-string 1))
+              (values (match-string 2)))
+          (add-face-text-property (match-beginning 1) (match-end 1) 'bold)
+          (make-text-button (match-beginning 2)
+                            (match-end 2)
+                            'type 'nixos-options-declarations-button
+                            'button-args (list values)))))))
 
 
 
