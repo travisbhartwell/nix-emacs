@@ -66,7 +66,7 @@
 
 (defvar nixos-options-json-file
   (let* ((cmd
-           "nix-build --no-out-link '<nixpkgs/nixos/release.nix>' -A options")
+           "nix-build -Q --no-out-link '<nixpkgs/nixos/release.nix>' -A options")
           (dir (replace-regexp-in-string "\n\\'" ""
                                          (shell-command-to-string cmd))))
     (expand-file-name "share/doc/nixos/options.json" dir))
