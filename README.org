@@ -1,5 +1,10 @@
-#+TITLE: Nix Options
-A set of useful Emacs modes and functions for users of Nix and Nix OS.
+#+TITLE: Nix Options -- A set of useful Emacs modes and functions for users of Nix and Nix OS.
+
+[[http://melpa.org/#/nixos-options][http://melpa.org/packages/nixos-options-badge.svg]]
+[[http://melpa.org/#/helm-nixos-options][http://melpa.org/packages/helm-nixos-options-badge.svg]]
+[[http://melpa.org/#/company-nixos-options][http://melpa.org/packages/company-nixos-options-badge.svg]]
+[[https://gitter.im/travisbhartwell/nix-emacs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge][https://badges.gitter.im/Join Chat.svg]]
+[[https://www.waffle.io/travisbhartwell/nix-emacs][https://badge.waffle.io/travisbhartwell/nix-emacs.svg]]
 
 ** Usage
 
@@ -36,10 +41,3 @@ Add company-nixos-options to allowed company-mode backends list
 For now it shows the documentation of the option in a popup-buffer.
 
 [[file:img/company-nixos-options.gif]]
-
-** Getting Help and Collaborating With Us
-
-Please join us on Gitter:
-
- #+ATTR_HTML: title="Join the chat at https://gitter.im/travisbhartwell/nix-emacs"
-  [[https://gitter.im/travisbhartwell/nix-emacs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge][file:https://badges.gitter.im/Join%20Chat.svg]]
