@@ -1,8 +1,9 @@
 #+TITLE: Nix Options -- A set of useful Emacs modes and functions for users of Nix and Nix OS.
 
-[[http://melpa.org/#/nixos-options][http://melpa.org/packages/nixos-options-badge.svg]]
-[[http://melpa.org/#/helm-nixos-options][http://melpa.org/packages/helm-nixos-options-badge.svg]]
-[[http://melpa.org/#/company-nixos-options][http://melpa.org/packages/company-nixos-options-badge.svg]]
+| nixos-options                                     | helm-nixos-options                                     | company-nixos-options                                     |
+| [[http://melpa.org/#/nixos-options][http://melpa.org/packages/nixos-options-badge.svg]] | [[http://melpa.org/#/helm-nixos-options][http://melpa.org/packages/helm-nixos-options-badge.svg]] | [[http://melpa.org/#/company-nixos-options][http://melpa.org/packages/company-nixos-options-badge.svg]] |
+
+
 [[https://gitter.im/travisbhartwell/nix-emacs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge][https://badges.gitter.im/Join Chat.svg]]
 [[https://www.waffle.io/travisbhartwell/nix-emacs][https://badge.waffle.io/travisbhartwell/nix-emacs.svg]]
 
