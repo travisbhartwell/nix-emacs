@@ -38,6 +38,7 @@
                ("Pretty print" . (lambda (f) (message "Pretty Printed: %s" (pp f))))
                ("Display name" . (lambda (f) (message "Name: %s" (nixos-options-get-name f))))))))
 
+;;;###autoload
 (defun helm-nixos-options ()
   (interactive)
   (helm :sources `(,(helm-source-nixos-options-search))
