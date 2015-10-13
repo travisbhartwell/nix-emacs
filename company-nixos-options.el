@@ -8,7 +8,7 @@
 
 ;; Keywords: unix
 ;; Homepage: http://www.github.com/travisbhartwell/nix-emacs/
-;; Version: "0.1.0"
+;; Version: 0.1.0
 ;; Package-Requires: ((company "0.8.0") (nixos-options "0.0.1") (cl-lib "0.5.0"))
 
 ;; This file is not part of GNU Emacs.
@@ -65,3 +65,4 @@
     (annotation (company-nixos-options--annotation arg))))
 
 (provide 'company-nixos-options)
+;;; company-nixos-options.el ends here
