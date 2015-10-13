@@ -125,3 +125,4 @@ Returns VALUE unchanged if not a boolean."
   (assoc name nixos-options))
 
 (provide 'nixos-options)
+;;; nixos-options.el ends here
