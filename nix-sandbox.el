@@ -1,4 +1,4 @@
-;;; nixos-sandbox.el --- Utility functions to work with nix-shell sandboxes
+;;; nix-sandbox.el --- Utility functions to work with nix-shell sandboxes
 
 ;; Copyright (C) 2015 Sven Keidel
 
@@ -19,36 +19,40 @@
 
 (require 'dash)
 
-(defgroup nixos nil
-  "customizations for nixos"
-  :prefix "nixos-"
+(defgroup nix nil
+  "customizations for nix"
+  :prefix "nix-"
   :group nil)
 
-(defcustom nixos-nixpkgs-path nil
+(defcustom nix-nixpkgs-path nil
   "Absolute path to a nixpkgs directory.
 
 Can be customized to select a nix-channel
 e.g. /home/user/.nix-defexpr/channels/unstable/nixpkgs"
-  :group 'nixos
+  :group 'nix
   :type '(choice (const :tag "No channel" nil)
                  (directory "Custom path to a nixpkgs distribution")))
 
+;;;###autoload
 (defun nix-shell-command (sandbox &rest args)
   "Assembles a nix-shell command that gets executed in the specified sandbox."
   (append
    (list "nix-shell")
-   (if nixos-nixpkgs-path
+   (if nix-nixpkgs-path
        (list "-I"
-        (concat "nixpkgs=" nixos-nixpkgs-path)))
+        (concat "nixpkgs=" nix-nixpkgs-path)))
    (list "--run"
-         (mapconcat 'identity args " ")
-         sandbox)))
+         (concat
+          "'"
+          (mapconcat 'identity args " ")
+          "'")
+         sandbox
+         "2>/dev/null")))
 
 
 (defun nix-shell-string (sandbox &rest args)
   (let ((cmd (apply 'nix-shell-command sandbox args)))
-    (mapconcat (lambda (x) (concat "'" x "'")) cmd " ")))
-
+    (mapconcat 'identity cmd " ")))
 
 ;;;###autoload
 (defun nix-compile (sandbox &rest args)
@@ -61,25 +65,27 @@ e.g. /home/user/.nix-defexpr/channels/unstable/nixpkgs"
   (shell-command-to-string (apply 'nix-shell-string sandbox args)))
 
 ;;;###autoload
-(defvar nixos-exec-path-map (make-hash-table :test 'equal
-                                             :size 10))
-
-(defun nixos-exec-path (sandbox)
-  "Returns the `exec-path' of the given sandbox."
-  (if (gethash sandbox nixos-exec-path-map)
-      (gethash sandbox nixos-exec-path-map)
-    (puthash sandbox
-             (split-string (nix-shell sandbox "echo" "$PATH") ":")
-             nixos-exec-path-map)))
+(defvar nix-exec-path-map (make-hash-table :test 'equal
+                                           :size 10))
 
 ;;;###autoload
-(defun nixos-executable-find (sandbox exe)
+(defun nix-exec-path (sandbox)
+  "Returns the `exec-path' of the given sandbox."
+  (if (gethash sandbox nix-exec-path-map)
+      (gethash sandbox nix-exec-path-map)
+    (puthash sandbox
+             (split-string (nix-shell sandbox "echo" "$PATH") ":")
+             nix-exec-path-map)))
+
+;;;###autoload
+(defun nix-executable-find (sandbox exe)
   "Searches for an executable in the given sandbox"
-  (let ((exec-path (nixos-exec-path sandbox)))
+  (let ((exec-path (nix-exec-path sandbox)))
     (and exec-path (executable-find exe))))
 
-(defun nixos-find-sandbox (path)
-  "Searches for a NixOS sandbox starting at the given path,
+;;;###autoload
+(defun nix-find-sandbox (path)
+  "Searches for a Nix sandbox starting at the given path,
 looking upwards."
   (map-nil 'expand-file-name
    (locate-dominating-file path
@@ -90,11 +96,12 @@ looking upwards."
       (funcall f x)
     nil))
 
-(defun nixos-current-sandbox ()
-  "Returns the path of the NixOS sandbox that is closest
+;;;###autoload
+(defun nix-current-sandbox ()
+  "Returns the path of the Nix sandbox that is closest
 to the current working directory."
-  (nixos-find-sandbox default-directory))
+  (nix-find-sandbox default-directory))
 
-(provide 'nixos-sandbox)
+(provide 'nix-sandbox)
 
-;;; nixos-sandbox.el ends here
+;;; nix-sandbox.el ends here
