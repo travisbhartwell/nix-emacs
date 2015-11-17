@@ -42,17 +42,15 @@ e.g. /home/user/.nix-defexpr/channels/unstable/nixpkgs"
        (list "-I"
         (concat "nixpkgs=" nix-nixpkgs-path)))
    (list "--run"
-         (concat
-          "'"
-          (mapconcat 'identity args " ")
-          "'")
+         (mapconcat 'identity args " ")
          sandbox
          "2>/dev/null")))
 
-
 (defun nix-shell-string (sandbox &rest args)
-  (let ((cmd (apply 'nix-shell-command sandbox args)))
-    (mapconcat 'identity cmd " ")))
+  (let* ((cmd (apply 'nix-shell-command sandbox args))
+        (run-index (-find-index (lambda (x) (equal x "--run")) cmd))
+        (cmd-quoted (-update-at (+ run-index 1) (lambda (x) (concat "'" x "'")) cmd)))
+    (mapconcat 'identity cmd-quoted " ")))
 
 ;;;###autoload
 (defun nix-compile (sandbox &rest args)
