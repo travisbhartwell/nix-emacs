@@ -45,36 +45,36 @@ For now it shows the documentation of the option in a popup-buffer.
 
 *** nixos-sandbox
 
-Contains utility functions to work with nix-shell sandboxes.
+Contains utility functions to work with =nix-shell= sandboxes.
 
- - ~nix-shell-command~ to compose a nix-shell command string that can be passed
+ - ~nix-shell-command~ to compose a =nix-shell= command string that can be passed
    to the command-line
  - ~nix-shell~ that directly executes a command in the given sandbox
- - ~nixos-find-sandbox~ searches from the given path upwards until it finds a
+ - ~nix-find-sandbox~ searches from the given path upwards until it finds a
    =*.nix= file.
- - ~nixos-current-sandbox~ searches from the current working directroy upwards
+ - ~nix-current-sandbox~ searches from the current working directroy upwards
    until it finds a =*.nix= file
- - ~nixos-executable-find~, a replacement for the built-in executable-find.
+ - ~nix-executable-find~, a replacement for the built-in =executable-find=.
    It searches in the given sandbox for executable.
 
 
 **** Flycheck
 
 With these utility functions, [[http://www.flycheck.org/][flycheck]]
-can easily be used on a NixOS system:
+can easily be used with Nix:
 
 #+begin_src emacs-lisp
 (setq flycheck-command-wrapper-function
-        (lambda (command) (apply 'nix-shell-command (nixos-current-sandbox) command))
+        (lambda (command) (apply 'nix-shell-command (nix-current-sandbox) command))
       flycheck-executable-find
-        (lambda (cmd) (nixos-executable-find (nixos-current-sandbox) cmd)))
+        (lambda (cmd) (nix-executable-find (nix-current-sandbox) cmd)))
 #+end_src
 
 **** Haskell Mode
 
-To use [[https://github.com/haskell/haskell-mode][haskell-mode]] on NixOS, add these lines to your configuration:
+To use [[https://github.com/haskell/haskell-mode][haskell-mode]] together with Nix, add these lines to your configuration:
 
 #+begin_src emacs-lisp
 (setq haskell-process-wrapper-function
-        (lambda (args) (apply 'nix-shell-command (nixos-current-sandbox) args)))
+        (lambda (args) (apply 'nix-shell-command (nix-current-sandbox) args)))
 #+end_src
