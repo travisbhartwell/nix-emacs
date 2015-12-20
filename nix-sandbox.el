@@ -83,11 +83,19 @@ e.g. /home/user/.nix-defexpr/channels/unstable/nixpkgs"
 
 ;;;###autoload
 (defun nix-find-sandbox (path)
-  "Searches for a Nix sandbox starting at the given path,
-looking upwards."
-  (map-nil 'expand-file-name
-   (locate-dominating-file path
-                           '(lambda (dir) (directory-files dir t ".*\.nix$")))))
+  "Searches for a Nix sandbox files or directories starting at the
+given path,looking upwards. If the directory contains a `shell.nix'
+file, the path to this file is returned. Otherwise if the directory
+contains a `default.nix' file, the parent directory is returned."
+  (and (file-exists-p path)
+   (let* ((sandbox-directory
+           (map-nil 'expand-file-name
+                    (locate-dominating-file path
+                                            '(lambda (dir) (directory-files dir t ".*\.nix$")))))
+          (shell-nix (and sandbox-directory (concat sandbox-directory "shell.nix"))))
+     (if (and sandbox-directory (file-exists-p shell-nix))
+         shell-nix
+       sandbox-directory))))
 
 (defun map-nil (f x)
   (if x
