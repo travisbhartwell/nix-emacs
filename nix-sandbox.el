@@ -37,7 +37,10 @@ e.g. /home/user/.nix-defexpr/channels/unstable/nixpkgs"
 (defun nix-create-sandbox-rc (sandbox)
   "Creates a new rc file that contains the environment for the sandbox."
   (let* ((env-str (shell-command-to-string
-                   (concat "nix-shell --run 'printenv -0' "
+                   (concat "nix-shell "
+                           (or (and nix-nixpkgs-path (concat "-I nixpkgs=" nix-nixpkgs-path))
+                               "")
+                           " --run 'printenv -0' "
                            sandbox
                            " 2> /dev/null")))
          (env (->> env-str
@@ -86,6 +89,7 @@ e.g. /home/user/.nix-defexpr/channels/unstable/nixpkgs"
 ;;;###autoload
 (defun nix-exec-path (sandbox)
   "Returns the `exec-path' of the given sandbox."
+
   (if (gethash sandbox nix-exec-path-map)
       (gethash sandbox nix-exec-path-map)
     (puthash sandbox
@@ -124,6 +128,12 @@ contains a `default.nix' file, the parent directory is returned."
   "Returns the path of the Nix sandbox that is closest
 to the current working directory."
   (nix-find-sandbox default-directory))
+
+(defun nix-clear-caches ()
+  "clears the cached information for all sandboxes"
+  (interactive)
+  (clrhash nix-sandbox-rc-map)
+  (clrhash nix-exec-path-map))
 
 (provide 'nix-sandbox)
 
