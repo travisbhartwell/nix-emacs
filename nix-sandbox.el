@@ -4,7 +4,7 @@
 
 ;; Author: Sven Keidel <svenkeidel@gmail.com>
 ;; Package-Version: 0.1
-;; Package-Requires: ((dash "2.11.0"))
+;; Package-Requires: ((dash "2.12.1") (s "1.10.0"))
 ;; Homepage: https://github.com/travisbhartwell/nix-emacs
 
 ;; This file is not part of GNU Emacs.
@@ -18,6 +18,7 @@
 ;;; Code:
 
 (require 'dash)
+(require 's)
 
 (defgroup nix nil
   "customizations for nix"
@@ -33,24 +34,43 @@ e.g. /home/user/.nix-defexpr/channels/unstable/nixpkgs"
   :type '(choice (const :tag "No channel" nil)
                  (directory "Custom path to a nixpkgs distribution")))
 
+(defun nix-create-sandbox-rc (sandbox)
+  "Creates a new rc file that contains the environment for the sandbox."
+  (let* ((env-str (shell-command-to-string
+                   (concat "nix-shell "
+                           (or (and nix-nixpkgs-path (concat "-I nixpkgs=" nix-nixpkgs-path))
+                               "")
+                           " --run 'printenv -0' "
+                           sandbox
+                           " 2> /dev/null")))
+         (env (->> env-str
+                   (s-split "\0")
+                   (-remove (lambda (var) (s-starts-with? "shellHook" var)))
+                   (-map (lambda (evar)
+                           (pcase (s-split-up-to "=" evar 1)
+                             (`(,var ,val)
+                              (concat "export " var "=" (shell-quote-argument val))))))))
+         (tmp-file (make-temp-file "nix-sandbox-rc-")))
+    (write-region (s-join "\n" env) nil tmp-file 'append)
+    tmp-file))
+
+(defvar nix-sandbox-rc-map (make-hash-table :test 'equal
+                                            :size 10))
+
+(defun nix-sandbox-rc (sandbox)
+  "Returns the rc file for the given sandbox or creates one."
+  (if (gethash sandbox nix-sandbox-rc-map)
+      (gethash sandbox nix-sandbox-rc-map)
+    (puthash sandbox (nix-create-sandbox-rc sandbox) nix-sandbox-rc-map)))
+
 ;;;###autoload
 (defun nix-shell-command (sandbox &rest args)
   "Assembles a nix-shell command that gets executed in the specified sandbox."
-  (append
-   (list "nix-shell")
-   (if nix-nixpkgs-path
-       (list "-I"
-        (concat "nixpkgs=" nix-nixpkgs-path)))
-   (list "--run"
-         (mapconcat 'identity args " ")
-         sandbox
-         "2>/dev/null")))
+  (list "sh" "-c" (format "source %s; %s" (nix-sandbox-rc sandbox) (s-join " " args))))
 
 (defun nix-shell-string (sandbox &rest args)
-  (let* ((cmd (apply 'nix-shell-command sandbox args))
-        (run-index (-find-index (lambda (x) (equal x "--run")) cmd))
-        (cmd-quoted (-update-at (+ run-index 1) (lambda (x) (concat "'" x "'")) cmd)))
-    (mapconcat 'identity cmd-quoted " ")))
+   (combine-and-quote-strings
+    (apply 'nix-shell-command sandbox args)))
 
 ;;;###autoload
 (defun nix-compile (sandbox &rest args)
@@ -69,10 +89,11 @@ e.g. /home/user/.nix-defexpr/channels/unstable/nixpkgs"
 ;;;###autoload
 (defun nix-exec-path (sandbox)
   "Returns the `exec-path' of the given sandbox."
+
   (if (gethash sandbox nix-exec-path-map)
       (gethash sandbox nix-exec-path-map)
     (puthash sandbox
-             (split-string (nix-shell sandbox "echo" "$PATH") ":")
+             (split-string (nix-shell sandbox "printenv" "PATH") ":")
              nix-exec-path-map)))
 
 ;;;###autoload
@@ -107,6 +128,12 @@ contains a `default.nix' file, the parent directory is returned."
   "Returns the path of the Nix sandbox that is closest
 to the current working directory."
   (nix-find-sandbox default-directory))
+
+(defun nix-clear-caches ()
+  "clears the cached information for all sandboxes"
+  (interactive)
+  (clrhash nix-sandbox-rc-map)
+  (clrhash nix-exec-path-map))
 
 (provide 'nix-sandbox)
 
