@@ -49,10 +49,16 @@
       (buffer-substring (point) (save-excursion (skip-syntax-backward "w_.")
                                                 (point))))
 
+(defun company-nixos--in-nix-context-p ()
+  (or (eq major-mode 'nix-mode)
+      (equal "nix" (file-name-extension
+                    (buffer-file-name (current-buffer))))))
+
 (defun company-nixos-options--prefix ()
   "Grab prefix at point."
-  (or (company-nixos--grab-symbol)
-      'stop))
+  (and (company-nixos--in-nix-context-p)
+       (or (company-nixos--grab-symbol)
+           'stop)))
 
 ;;;###autoload
 (defun company-nixos-options (command &optional arg &rest ignored)
