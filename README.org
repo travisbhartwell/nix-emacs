@@ -1,7 +1,7 @@
 #+TITLE: Nix Options -- A set of useful Emacs modes and functions for users of Nix and Nix OS.
 
-| nixos-options                                     | helm-nixos-options                                     | company-nixos-options                                     |
-| [[http://melpa.org/#/nixos-options][http://melpa.org/packages/nixos-options-badge.svg]] | [[http://melpa.org/#/helm-nixos-options][http://melpa.org/packages/helm-nixos-options-badge.svg]] | [[http://melpa.org/#/company-nixos-options][http://melpa.org/packages/company-nixos-options-badge.svg]] |
+| nixos-options                                     | helm-nixos-options                                     | company-nixos-options                                     | nix-sandbox                                           |
+| [[http://melpa.org/#/nixos-options][http://melpa.org/packages/nixos-options-badge.svg]] | [[http://melpa.org/#/helm-nixos-options][http://melpa.org/packages/helm-nixos-options-badge.svg]] | [[http://melpa.org/#/company-nixos-options][http://melpa.org/packages/company-nixos-options-badge.svg]] | [[https://melpa.org/#/nix-sandbox][file:https://melpa.org/packages/nix-sandbox-badge.svg]] |
 
 
 [[https://gitter.im/travisbhartwell/nix-emacs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge][https://badges.gitter.im/Join Chat.svg]]
@@ -45,18 +45,19 @@ For now it shows the documentation of the option in a popup-buffer.
 
 *** nixos-sandbox
 
-Contains utility functions to work with =nix-shell= sandboxes.
+Utility functions to work with nix sandboxes.
 
- - ~nix-shell-command~ to compose a =nix-shell= command string that can be passed
-   to the command-line
- - ~nix-shell~ that directly executes a command in the given sandbox
- - ~nix-find-sandbox~ searches from the given path upwards until it finds a
-   =*.nix= file.
- - ~nix-current-sandbox~ searches from the current working directroy upwards
-   until it finds a =*.nix= file
- - ~nix-executable-find~, a replacement for the built-in =executable-find=.
-   It searches in the given sandbox for executable.
-
+ - ~nix-shell-command~ composes command that can be executes within
+   the given sandbox
+ - ~nix-shell~ executes a command within the given sandbox
+ - ~nix-compile~ compiles a program withing the given sandbox
+ - ~nix-find-sandbox~ searches from the given path upwards until it
+   finds a =shell.nix= or =default.nix= file.
+ - ~nix-current-sandbox~ searches from the current working directory
+   upwards until it finds a =shell.nix= or =default.nix= file.
+ - ~nix-executable-find~ is a replacement for the built-in
+   =executable-find=.  It searches in the given sandbox for
+   executable.
 
 **** Flycheck
 
