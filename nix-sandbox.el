@@ -59,9 +59,8 @@ e.g. /home/user/.nix-defexpr/channels/unstable/nixpkgs"
 
 (defun nix-sandbox-rc (sandbox)
   "Return the rc file for the given SANDBOX or create one."
-  (if (gethash sandbox nix-sandbox-rc-map)
-      (gethash sandbox nix-sandbox-rc-map)
-    (puthash sandbox (nix-create-sandbox-rc sandbox) nix-sandbox-rc-map)))
+  (or (gethash sandbox nix-sandbox-rc-map)
+      (puthash sandbox (nix-create-sandbox-rc sandbox) nix-sandbox-rc-map)))
 
 ;;;###autoload
 (defun nix-shell-command (sandbox &rest args)
@@ -91,11 +90,10 @@ e.g. /home/user/.nix-defexpr/channels/unstable/nixpkgs"
 (defun nix-exec-path (sandbox)
   "Return the `exec-path' of the given SANDBOX."
 
-  (if (gethash sandbox nix-exec-path-map)
-      (gethash sandbox nix-exec-path-map)
-    (puthash sandbox
-             (split-string (nix-shell sandbox "printenv" "PATH") ":")
-             nix-exec-path-map)))
+  (or (gethash sandbox nix-exec-path-map)
+      (puthash sandbox
+               (split-string (nix-shell sandbox "printenv" "PATH") ":")
+               nix-exec-path-map)))
 
 ;;;###autoload
 (defun nix-executable-find (sandbox executable)
