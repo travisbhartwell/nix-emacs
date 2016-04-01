@@ -47,22 +47,17 @@ For now it shows the documentation of the option in a popup-buffer.
 
 Utility functions to work with nix sandboxes.
 
- - ~nix-shell-command~ composes command that can be executes within
-   the given sandbox
- - ~nix-shell~ executes a command within the given sandbox
- - ~nix-compile~ compiles a program withing the given sandbox
+ - ~nix-shell-command~ composes command that can be executed in the given sandbox
+ - ~nix-shell~ executes a command in the given sandbox
+ - ~nix-compile~ compiles a program in the given sandbox
  - ~nix-find-sandbox~ searches from the given path upwards until it
    finds a =shell.nix= or =default.nix= file.
- - ~nix-current-sandbox~ searches from the current working directory
-   upwards until it finds a =shell.nix= or =default.nix= file.
- - ~nix-executable-find~ is a replacement for the built-in
-   =executable-find=.  It searches in the given sandbox for
-   executable.
+ - ~nix-current-sandbox~ searches for a sandbox file starting from the current working directory.
+ - ~nix-executable-find~ a replacement for the built-in =executable-find=. The function searches in the given sandbox for executables.
 
 **** Flycheck
 
-With these utility functions, [[http://www.flycheck.org/][flycheck]]
-can easily be used with Nix:
+With this configuration [[http://www.flycheck.org/][flycheck]] can find executables of checkers that would be only accessible via =nix-shell=:
 
 #+begin_src emacs-lisp
 (setq flycheck-command-wrapper-function
@@ -73,7 +68,7 @@ can easily be used with Nix:
 
 **** Haskell Mode
 
-To use [[https://github.com/haskell/haskell-mode][haskell-mode]] together with Nix, add these lines to your configuration:
+Add these lines to your configuration to allow [[https://github.com/haskell/haskell-mode][haskell-mode]] to look for =ghc= in the current sandbox.
 
 #+begin_src emacs-lisp
 (setq haskell-process-wrapper-function
