@@ -36,22 +36,15 @@ e.g. /home/user/.nix-defexpr/channels/unstable/nixpkgs"
 
 (defun nix-create-sandbox-rc (sandbox)
   "Create a new rc file containing the environment for the given SANDBOX."
-  (let* ((env-str (shell-command-to-string
-                   (concat "nix-shell "
-                           (or (and nix-nixpkgs-path (concat "-I nixpkgs=" nix-nixpkgs-path))
-                               "")
-                           " --run 'printenv -0' "
-                           (shell-quote-argument sandbox)
-                           " 2> /dev/null")))
-         (env (->> env-str
-                   (s-split "\0")
-                   (-remove (lambda (var) (s-starts-with? "shellHook" var)))
-                   (-map (lambda (evar)
-                           (pcase (s-split-up-to "=" evar 1)
-                             (`(,var ,val)
-                              (concat "export " var "=" (shell-quote-argument val))))))))
-         (tmp-file (make-temp-file "nix-sandbox-rc-")))
-    (write-region (s-join "\n" env) nil tmp-file 'append)
+  (let ((env-str (shell-command-to-string
+                  (concat "nix-shell "
+                          (or (and nix-nixpkgs-path (concat "-I nixpkgs=" nix-nixpkgs-path))
+                              "")
+                          " --run 'declare +x shellHook; declare -x; declare -xf' "
+                          (shell-quote-argument sandbox)
+                          " 2> /dev/null")))
+        (tmp-file (make-temp-file "nix-sandbox-rc-")))
+    (write-region env-str nil tmp-file 'append)
     tmp-file))
 
 (defvar nix-sandbox-rc-map (make-hash-table :test 'equal
