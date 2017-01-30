@@ -58,7 +58,7 @@ e.g. /home/user/.nix-defexpr/channels/unstable/nixpkgs"
 ;;;###autoload
 (defun nix-shell-command (sandbox &rest args)
   "Assemble a command from ARGS that can be executed in the specified SANDBOX."
-  (list "sh" "-c" (format "source %s; %s" (nix-sandbox-rc sandbox) (s-join " " args))))
+  (list "bash" "-c" (format "source %s; %s" (nix-sandbox-rc sandbox) (s-join " " args))))
 
 (defun nix-shell-string (sandbox &rest args)
   "Assemble a command string from ARGS that can be executed in the specifed SANDBOX."
