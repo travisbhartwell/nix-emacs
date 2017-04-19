@@ -9,7 +9,7 @@
 ;; Keywords: unix
 ;; Homepage: http://www.github.com/travisbhartwell/nix-emacs/
 ;; Version: 0.1.0
-;; Package-Requires: ((company "0.8.0") (nixos-options "0.0.1") (cl-lib "0.5.0"))
+;; Package-Requires: ((company "0.8.0") (nixos-options "0.0.2") (cl-lib "0.5.0"))
 
 ;; This file is not part of GNU Emacs.
 
@@ -33,7 +33,7 @@
 
 (defun company-nixos-options--candidates (prefix)
   (let ((res))
-    (dolist (option nixos-options)
+    (dolist (option (nixos-options-list))
       (let ((name (nixos-options-get-name option)))
         (when (string-prefix-p prefix name)
           (push name res))))
