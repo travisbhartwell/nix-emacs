@@ -37,12 +37,15 @@ e.g. /home/user/.nix-defexpr/channels/unstable/nixpkgs"
 (defun nix-create-sandbox-rc (sandbox)
   "Create a new rc file containing the environment for the given SANDBOX."
   (let ((env-str (shell-command-to-string
-                  (concat "nix-shell "
-                          (or (and nix-nixpkgs-path (concat "-I nixpkgs=" nix-nixpkgs-path))
-                              "")
-                          " --run 'declare +x shellHook; declare -x; declare -xf' "
-                          (shell-quote-argument sandbox)
-                          " 2> /dev/null")))
+                  (if sandbox 
+                      (concat "nix-shell "
+                        (or (and nix-nixpkgs-path (concat "-I nixpkgs=" nix-nixpkgs-path))
+                         "")
+                         " --run 'declare +x shellHook; declare -x; declare -xf' "
+                         (shell-quote-argument sandbox)
+                         " 2> /dev/null")
+                    "bash -c 'declare +x shellHook; declare -x; declare -xf'"
+                    )))
         (tmp-file (make-temp-file "nix-sandbox-rc-")))
     (write-region env-str nil tmp-file 'append)
     tmp-file))
@@ -85,7 +88,7 @@ e.g. /home/user/.nix-defexpr/channels/unstable/nixpkgs"
 
   (or (gethash sandbox nix-exec-path-map)
       (puthash sandbox
-               (split-string (nix-shell sandbox "printenv" "PATH") ":")
+               (split-string (s-trim (nix-shell sandbox "printenv" "PATH")) ":")
                nix-exec-path-map)))
 
 ;;;###autoload
