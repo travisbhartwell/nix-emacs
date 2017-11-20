@@ -43,7 +43,7 @@ For now it shows the documentation of the option in a popup-buffer.
 
 [[file:img/company-nixos-options.gif]]
 
-*** nixos-sandbox
+*** nix-sandbox
 
 Utility functions to work with nix sandboxes.
 
