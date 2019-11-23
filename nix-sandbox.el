@@ -37,7 +37,7 @@ e.g. /home/user/.nix-defexpr/channels/unstable/nixpkgs"
 (defun nix-create-sandbox-rc (sandbox)
   "Create a new rc file containing the environment for the given SANDBOX."
   (let ((env-str (shell-command-to-string
-                  (if sandbox 
+                  (if sandbox
                       (concat "nix-shell "
                         (or (and nix-nixpkgs-path (concat "-I nixpkgs=" nix-nixpkgs-path))
                          "")
@@ -75,7 +75,7 @@ e.g. /home/user/.nix-defexpr/channels/unstable/nixpkgs"
   (compile (apply 'nix-shell-string sandbox command)))
 
 ;;;###autoload
-(defun nix-shell (sandbox &rest command)
+(defun nix-sandbox/nix-shell (sandbox &rest command)
   "Run a COMMAND in the given SANDBOX and return the output."
   (shell-command-to-string (apply 'nix-shell-string sandbox command)))
 
@@ -88,7 +88,7 @@ e.g. /home/user/.nix-defexpr/channels/unstable/nixpkgs"
 
   (or (gethash sandbox nix-exec-path-map)
       (puthash sandbox
-               (split-string (s-trim (nix-shell sandbox "printenv" "PATH")) ":")
+               (split-string (s-trim (nix-sandbox/nix-shell sandbox "printenv" "PATH")) ":")
                nix-exec-path-map)))
 
 ;;;###autoload
