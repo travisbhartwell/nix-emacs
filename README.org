@@ -1,7 +1,7 @@
 #+TITLE: Nix Options -- A set of useful Emacs modes and functions for users of Nix and Nix OS.
 
-| nixos-options                                     | helm-nixos-options                                     | company-nixos-options                                     | nix-sandbox                                           |
-| [[http://melpa.org/#/nixos-options][http://melpa.org/packages/nixos-options-badge.svg]] | [[http://melpa.org/#/helm-nixos-options][http://melpa.org/packages/helm-nixos-options-badge.svg]] | [[http://melpa.org/#/company-nixos-options][http://melpa.org/packages/company-nixos-options-badge.svg]] | [[https://melpa.org/#/nix-sandbox][file:https://melpa.org/packages/nix-sandbox-badge.svg]] |
+| nixos-options                                     | helm-nixos-options                                     | ivy-nixos-options                                       | company-nixos-options                                     | nix-sandbox                                           |
+| [[http://melpa.org/#/nixos-options][http://melpa.org/packages/nixos-options-badge.svg]] | [[http://melpa.org/#/helm-nixos-options][http://melpa.org/packages/helm-nixos-options-badge.svg]] | [[http://melpa.org/packages/ivy-nixos-options-badge.svg]] | [[http://melpa.org/#/company-nixos-options][http://melpa.org/packages/company-nixos-options-badge.svg]] | [[https://melpa.org/#/nix-sandbox][file:https://melpa.org/packages/nix-sandbox-badge.svg]] |
 
 
 [[https://gitter.im/travisbhartwell/nix-emacs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge][https://badges.gitter.im/Join Chat.svg]]
@@ -19,6 +19,7 @@ to choose where and if you want it global you can have this.
 #+end_src
 
 It looks like this
+
 [[file:img/helm-nixos-options-candidates.png]]
 
 The description of the option is shown in the minibuffer
@@ -30,6 +31,37 @@ If you want more information, there is a detailed buffer when you press =return=
 There are also other actions like inserting the current match into the buffer
 
 [[file:img/helm-nixos-options.gif]]
+
+*** ivy-nixos-options
+
+Use this if you don't want the rather heavy =helm= dependency.
+The function =ivy-nixos-options= is the one that you want to bind. You are free
+to choose where and if you want it global you can have this.
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c C-S-n") 'ivy-nixos-options)
+
+  (setq ivy-nixos-options-default 1)
+  ; defines what function is being called when pressing return. I like to have it set to 2
+  ; All of the actions can always be called when pressing M-o
+  ; 1 = show the docs buffer (default)
+  ; 2 = insert the string
+  ; 3 = only show the description of the command
+  #+end_src
+
+It looks like this
+
+[[file:img/ivy-nixos-options-candidates.png]]
+
+If you want more information, there is a detailed buffer when you press =return=
+
+[[file:img/ivy-nixos-options-doc-buffer.png]]
+
+There are also other actions like inserting the current match into the buffer.
+The builtin help menu from ivy (display with =M-o=) shows all possible options. e.g. =M-o i= will insert the option
+
+[[file:img/ivy-nixos-options-actions.png]]
+
 
 *** company-nixos-options
 
