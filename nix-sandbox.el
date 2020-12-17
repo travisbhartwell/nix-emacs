@@ -108,7 +108,11 @@ file is returned.  Otherwise if the directory contains a
               (sandbox-directory
                (funcall map-nil 'expand-file-name
                         (locate-dominating-file path
-                          '(lambda (dir) (directory-files dir t ".*\.nix$")))))
+                          '(lambda (dir)
+                             (seq-filter
+                              (lambda (candidate)
+                                (not (file-directory-p candidate)))
+                              (directory-files dir t ".*\\.nix$"))))))
               (shell-nix (and sandbox-directory (concat sandbox-directory "shell.nix"))))
          (if (and sandbox-directory (file-exists-p shell-nix))
              shell-nix
