@@ -8,7 +8,7 @@
 
 ;; Keywords: unix
 ;; Homepage: http://www.github.com/travisbhartwell/nix-emacs/
-;; Version: 0.0.1
+;; Version: 0.0.2
 ;; Package-Requires: ((emacs "24"))
 
 ;; This file is not part of GNU Emacs.
@@ -65,12 +65,19 @@
 (define-nixos-options-item "declarations" "Declared in")
 
 (defvar nixos-options-json-file
-  (let* ((cmd
-          "export NIXPKGS_ALLOW_UNFREE=1; nix-build -Q --no-out-link '<nixpkgs/nixos/release.nix>' -A options 2>/dev/null")
-          (dir (replace-regexp-in-string "\n\\'" ""
-                                         (shell-command-to-string cmd))))
-    (expand-file-name "share/doc/nixos/options.json" dir))
-  "Location of the options file.")
+   nil 
+   "Location of the options file.")
+
+(defun nixos-options--get-json-file ()
+  ;; Initialize nixos-options-json-file if it is nil
+  (unless nixos-options-json-file
+    (setq nixos-options-json-file
+          (let* ((cmd
+                  "export NIXPKGS_ALLOW_UNFREE=1; nix-build -Q --no-out-link '<nixpkgs/nixos/release.nix>' -A options 2>/dev/null")
+                 (dir (replace-regexp-in-string "\n\\'" ""
+                                                (shell-command-to-string cmd))))
+            (expand-file-name "share/doc/nixos/options.json" dir))))
+  nixos-options-json-file)
 
 (defun nixos-options--boolean-string (value)
   "Return the string representation of the boolean VALUE.
@@ -95,11 +102,17 @@ Returns VALUE unchanged if not a boolean."
       `(,name . ,data))))
 
 (defvar nixos-options
-  (if (file-exists-p nixos-options-json-file)
-      (let* ((json-key-type 'string)
-             (raw-options (json-read-file nixos-options-json-file)))
-        (mapcar 'nixos-options--make-alist raw-options))
-    (message "Warning: Cannot find nixos option file.")))
+  nil)
+
+(defun nixos-options-list ()
+  (unless nixos-options
+    (setq nixos-options
+          (if (file-exists-p (nixos-options--get-json-file))
+              (let* ((json-key-type 'string)
+                     (raw-options (json-read-file nixos-options-json-file)))
+                (mapcar 'nixos-options--make-alist raw-options))
+            (message "Warning: Cannot find nixos option file."))))
+  nixos-options)
 
 (defun nixos-options-get-documentation-for-option (option)
   (concat (nixos-options-display-name option)
@@ -122,7 +135,7 @@ Returns VALUE unchanged if not a boolean."
       buf)))
 
 (defun nixos-options-get-option-by-name (name)
-  (assoc name nixos-options))
+  (assoc name (nixos-options-list)))
 
 (provide 'nixos-options)
 ;;; nixos-options.el ends here

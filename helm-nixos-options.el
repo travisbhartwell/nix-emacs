@@ -9,7 +9,7 @@
 ;; Keywords: unix
 ;; Homepage: http://www.github.com/travisbhartwell/nix-emacs/
 ;; Version: 0.1.0
-;; Package-Requires: ((nixos-options "0.0.1") (helm "1.5.6"))
+;; Package-Requires: ((nixos-options "0.0.2") (helm "1.5.6"))
 
 ;; This file is not part of GNU Emacs.
 
@@ -24,24 +24,25 @@
 (require 'nixos-options)
 (require 'helm)
 
-(defun helm-source-nixos-options-search ()
-  `((name . "NixOS Options")
-    (requires-pattern . 2)
-    (candidates . nixos-options)
-    (follow . 1)
-    (persistent-action . (lambda (f) (message (format "%s" (nixos-options-get-description f)))))
-    (action . (("View documentation" . (lambda (f)
-                                         (switch-to-buffer-other-window
-                                          (nixos-options-doc-buffer
-                                           (nixos-options-get-documentation-for-option f)))))
-               ("Insert into buffer" . (lambda (f) (insert (nixos-options-get-name f))))
-               ("Pretty print" . (lambda (f) (message "Pretty Printed: %s" (pp f))))
-               ("Display name" . (lambda (f) (message "Name: %s" (nixos-options-get-name f))))))))
+(defconst helm-source-nixos-options-search
+  (helm-build-sync-source "NixOS Options"
+    :requires-pattern 2
+    :candidates 'nixos-options-list
+    :follow 1
+    :persistent-action (lambda (f) (message (format "%s" (nixos-options-get-description f))))
+    :action '(("View documentation" . (lambda (f)
+                                        (switch-to-buffer-other-window
+                                         (nixos-options-doc-buffer
+                                          (nixos-options-get-documentation-for-option f)))))
+              ("Insert into buffer" . (lambda (f) (insert (nixos-options-get-name f))))
+              ("Pretty print" . (lambda (f) (message "Pretty Printed: %s" (pp f))))
+              ("Display name" . (lambda (f) (message "Name: %s" (nixos-options-get-name f)))))
+    ))
 
 ;;;###autoload
 (defun helm-nixos-options ()
   (interactive)
-  (helm :sources `(,(helm-source-nixos-options-search))
+  (helm :sources '(helm-source-nixos-options-search)
         :buffer "*helm-nixos-options*"))
 
 (provide 'helm-nixos-options)
