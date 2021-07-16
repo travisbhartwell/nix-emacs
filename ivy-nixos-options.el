@@ -1,4 +1,4 @@
-;;; ivy-nixos-options.el --- An Ivy Interface for nixos-options.
+;;; ivy-nixos-options.el --- An Ivy Interface for nixos-options
 
 ;; Copyright (C) 2020 Samuel Ruprecht
 
@@ -23,7 +23,10 @@
 (require 'nixos-options)
 (require 'ivy)
 
-(defun ivy-nixos-buffer-display (text)
+(make-obsolete 'ivy-nixos-buffer-display 'ivy-nixos-options-buffer-display "0.2")
+(defalias 'ivy-nixos-buffer-display 'ivy-nixos-options-buffer-display)
+
+(defun ivy-nixos-options-buffer-display (text)
   "Insert TEXT into a custom ivy-doc buffer and show it if it's not visible.
 This function should only be called by ivy, as ivy is automatically resumed with `ivy-resume`"
   (let ((buf (get-buffer-create "*nixos-options-ivy-doc*")))
@@ -43,8 +46,7 @@ This function should only be called by ivy, as ivy is automatically resumed with
 2 - insert the string into the buffer
 3 - show the description and resume ivy"
   :type 'integer
-  :group 'nixos-options
-  )
+  :group 'nixos-options)
 
   ;;;###autoload
 (defun ivy-nixos-options ()
@@ -57,13 +59,13 @@ This function should only be called by ivy, as ivy is automatically resumed with
    :preselect (ivy-thing-at-point)
    :action (list ivy-nixos-options-default
                  '("h" (lambda (f) (progn
-                                     (ivy-nixos-buffer-display (nixos-options-get-documentation-for-option f))
+                                     (ivy-nixos-options-buffer-display (nixos-options-get-documentation-for-option f))
                                      (ivy-resume)))
                    "View documentation")
                  '("i" (lambda (f) (insert (nixos-options-get-name f)))
                    "Insert into buffer")
                  '("d" (lambda (f) (progn
-                                     (ivy-nixos-buffer-display
+                                     (ivy-nixos-options-buffer-display
                                       (message (format
                                                 "%s: %s"
                                                 (car f)
