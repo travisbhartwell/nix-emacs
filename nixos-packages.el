@@ -1,4 +1,4 @@
-;;; nixos-packages.el --- Interface for browsing and completing NixOS packages.
+;;; nixos-packages.el --- Interface for browsing and completing NixOS packages -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2015 Diego Berrocal and Travis B. Hartwell
 
@@ -9,7 +9,7 @@
 ;; Keywords: unix
 ;; Homepage: http://www.github.com/travisbhartwell/nix-emacs/
 ;; Version: 0.0.1
-;; Package-Requires: ((emacs "24"))
+;; Package-Requires: ((emacs "24.1"))
 
 ;; This file is not part of GNU Emacs.
 

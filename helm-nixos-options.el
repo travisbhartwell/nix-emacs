@@ -1,4 +1,4 @@
-;;; helm-nixos-options.el --- Helm Interface for nixos-options
+;;; helm-nixos-options.el --- Helm Interface for nixos-options -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2015 Diego Berrocal and Travis B. Hartwell
 
@@ -9,7 +9,7 @@
 ;; Keywords: unix
 ;; Homepage: http://www.github.com/travisbhartwell/nix-emacs/
 ;; Version: 0.1.0
-;; Package-Requires: ((nixos-options "0.0.1") (helm "1.5.6"))
+;; Package-Requires: ((emacs "24.1") (nixos-options "0.0.1") (helm "1.5.6"))
 
 ;; This file is not part of GNU Emacs.
 

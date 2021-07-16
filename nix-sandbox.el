@@ -1,10 +1,10 @@
-;;; nix-sandbox.el --- Utility functions to work with nix-shell sandboxes
+;;; nix-sandbox.el --- Utility functions to work with nix-shell sandboxes  -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2015 Sven Keidel
 
 ;; Author: Sven Keidel <svenkeidel@gmail.com>
 ;; Package-Version: 0.1
-;; Package-Requires: ((dash "2.12.1") (s "1.10.0"))
+;; Package-Requires: ((emacs "24.1") (dash "2.12.1") (s "1.10.0"))
 ;; Homepage: https://github.com/travisbhartwell/nix-emacs
 
 ;; This file is not part of GNU Emacs.

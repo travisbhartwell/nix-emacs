@@ -1,4 +1,4 @@
-;;; ivy-nixos-options.el --- An Ivy Interface for nixos-options.
+;;; ivy-nixos-options.el --- An Ivy Interface for nixos-options -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020 Samuel Ruprecht
 
@@ -8,7 +8,7 @@
 ;; Keywords: unix
 ;; Homepage: http://www.github.com/travisbhartwell/nix-emacs/
 ;; Version: 0.1.0
-;; Package-Requires: ((nixos-options "0.0.1") (ivy "0.13.0"))
+;; Package-Requires: ((emacs "24.1") (nixos-options "0.0.1") (ivy "0.13.0"))
 
 ;; This file is not part of GNU Emacs.
 
