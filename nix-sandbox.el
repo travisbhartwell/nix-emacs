@@ -95,8 +95,9 @@ e.g. /home/user/.nix-defexpr/channels/unstable/nixpkgs"
 ;;;###autoload
 (defun nix-executable-find (sandbox executable)
   "finds an EXECUTABLE in SANDBOX"
-  (set (make-local-variable 'exec-path) (nix-exec-path sandbox))
-  (executable-find executable))
+  (with-temp-buffer
+    (set (make-local-variable 'exec-path) (nix-exec-path sandbox))
+    (executable-find executable)))
 
 
 ;;;###autoload
