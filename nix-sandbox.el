@@ -19,6 +19,7 @@
 
 (require 'dash)
 (require 's)
+(require 'nix-mode)
 
 (defgroup nix nil
   "customizations for nix"
@@ -36,19 +37,28 @@ e.g. /home/user/.nix-defexpr/channels/unstable/nixpkgs"
 
 (defun nix-create-sandbox-rc (sandbox)
   "Create a new rc file containing the environment for the given SANDBOX."
-  (let ((env-str (shell-command-to-string
-                  (if sandbox
-                      (concat "nix-shell "
-                        (or (and nix-nixpkgs-path (concat "-I nixpkgs=" nix-nixpkgs-path))
-                         "")
-                         " --run 'declare +x shellHook; declare -x; declare -xf' "
-                         (shell-quote-argument sandbox)
-                         " 2> /dev/null")
-                    "bash -c 'declare +x shellHook; declare -x; declare -xf'"
-                    )))
-        (tmp-file (make-temp-file "nix-sandbox-rc-")))
-    (write-region env-str nil tmp-file 'append)
-    tmp-file))
+  (let ((flake-path-p (string-match-p "#" (or sandbox "")))
+        (current-directory default-directory))
+    (and (not flake-path-p) sandbox (cd (file-name-directory sandbox)))
+    (let* ((internal-nix-command (if (or flake-path-p (file-exists-p "flake.nix"))
+                                     "nix develop"
+                                   "nix-shell"))
+           (command (if sandbox
+                        (concat internal-nix-command
+                                (if flake-path-p (concat " " (shell-quote-argument sandbox)) "")
+                                (or (and nix-nixpkgs-path (concat "-I nixpkgs=" nix-nixpkgs-path))
+                                    "")
+                                (if (string= internal-nix-command "nix-shell") " --run" " -c bash -c")
+                                " 'declare +x shellHook; declare -x; declare -xf' "
+                                (if (string= internal-nix-command "nix-shell") (shell-quote-argument sandbox))
+                                " 2> /dev/null")
+                      "bash -c 'declare +x shellHook; declare -x; declare -xf'"))
+           (env-str (shell-command-to-string command))
+           (tmp-file (make-temp-file "nix-sandbox-rc-")))
+      (cd current-directory)
+      (message "Ran command %s" command)
+      (write-region env-str nil tmp-file 'append)
+      tmp-file)))
 
 (defvar nix-sandbox-rc-map (make-hash-table :test 'equal
                                             :size 4))
@@ -100,24 +110,36 @@ e.g. /home/user/.nix-defexpr/channels/unstable/nixpkgs"
 
 ;;;###autoload
 (defun nix-find-sandbox (path)
-  "Search for a sandbox starting at PATH traversing upwards the directory tree.
-If the directory contains a `shell.nix' file, the path to this
-file is returned.  Otherwise if the directory contains a
-`default.nix' file, the parent directory is returned."
+  "Uses nix-mode to find a sandbox file. First tries to use the
+`nix-flake' variable, then the `nix-file' variable, then tries to
+locate upwards a flake.nix file, then a default.nix file, then a
+shell.nix file, then any nix file, and finally uses the user
+environment."
   (and (file-exists-p path)
-       (let* ((map-nil (lambda (f x) (if x (funcall f x) nil)))
-              (sandbox-directory
-               (funcall map-nil 'expand-file-name
-                        (locate-dominating-file path
-                          '(lambda (dir)
-                             (seq-filter
-                              (lambda (candidate)
-                                (not (file-directory-p candidate)))
-                              (directory-files dir t ".*\\.nix$"))))))
-              (shell-nix (and sandbox-directory (concat sandbox-directory "shell.nix"))))
-         (if (and sandbox-directory (file-exists-p shell-nix))
-             shell-nix
-           sandbox-directory))))
+       (cl-flet ((map-nil (f x)
+                          (if x (funcall f x) nil))
+                 (file-contents (filename)
+                                (with-temp-buffer
+                                  (insert-file-contents filename)
+                                  (buffer-string))))
+         (let* ((sandbox-directory
+                 (map-nil 'expand-file-name
+                          (locate-dominating-file path
+                                                  '(lambda (dir)
+                                                     (seq-filter
+                                                      (lambda (candidate)
+                                                        (not (file-directory-p candidate)))
+                                                      (directory-files dir t ".*\\.nix$"))))))
+                (flake-nix (and sandbox-directory (concat sandbox-directory "flake.nix")))
+                (default-nix (and sandbox-directory (concat sandbox-directory "default.nix")))
+                (shell-nix (and sandbox-directory (concat sandbox-directory "shell.nix"))))
+           (cond (nix-flake nix-flake)
+                 (nix-file nix-file)
+                 ((and sandbox-directory (file-exists-p flake-nix)) flake-nix)
+                 ((and sandbox-directory (file-exists-p default-nix)) default-nix)
+                 ((and sandbox-directory (file-exists-p shell-nix)) shell-nix)
+                 (sandbox-directory sandbox-directory)
+                 (t nil))))))
 
 ;;;###autoload
 (defun nix-current-sandbox ()
